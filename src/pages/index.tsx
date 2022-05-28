@@ -25,7 +25,7 @@ export default function HomePage() {
       <main>
         <section className='bg-white'>
           <div className='layout flex min-h-screen flex-col items-center justify-center text-center'>
-            <h1 className='text-5xl font-bold'>
+            <h1 className='text-3xl font-bold'>
               <span className='text-primary'>Next.js</span> +{' '}
               <span className='text-justify text-rose-900'>Draft.js</span> +{' '}
               <span className='text-right text-gray-500'>Copy/Paste Image</span>

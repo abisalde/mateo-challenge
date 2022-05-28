@@ -78,18 +78,15 @@ const CustomEditor = () => {
   const handlePastedFiles = (files: Array<Blob>): DraftHandleValue => {
     const file = files[0];
     const reader = new FileReader();
-
+    reader.readAsDataURL(file);
     reader.onload = () => {
       const dataPath = URL.createObjectURL(file);
       const contentState = editorState.getCurrentContent();
       const contentStateWithEntity = contentState.createEntity(
-        'IMAGE',
+        'image',
         'IMMUTABLE',
         {
           src: dataPath,
-          height: 'auto',
-          width: '100%',
-          name: files[0].name,
         }
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -100,7 +97,7 @@ const CustomEditor = () => {
       );
       setEditorState(newEditorState);
     };
-    reader.readAsDataURL(file);
+    // reader.readAsDataURL(file);
     return 'handled';
   };
 
@@ -146,7 +143,7 @@ const CustomEditor = () => {
             />
           </div>
         </div>
-        <Button variant='primary' className='mt-4' type='submit'>
+        <Button variant='light' className='mt-4' type='submit'>
           Submit
         </Button>
       </form>

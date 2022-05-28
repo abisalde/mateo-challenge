@@ -22,7 +22,7 @@ const Media = ({ contentState, block }: MediaProps) => {
   const type = entity.getType();
 
   let media;
-  if (type === 'IMAGE') {
+  if (type === 'image') {
     media = <ImageAvatar srcURL={src} />;
   }
   return media;

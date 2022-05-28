@@ -1,13 +1,14 @@
 import { ContentBlock, ContentState } from 'draft-js';
-import Image from 'next/image';
 import * as React from 'react';
+
+import NextImage from '@/components/NextImage';
 
 interface IProps {
   srcURL: string;
 }
 
 const ImageAvatar: React.FC<IProps> = ({ srcURL, ...props }) => {
-  return <Image src={srcURL} alt='' {...props} height={350} width={350} />;
+  return <NextImage src={srcURL} alt='' {...props} height={350} width={350} />;
 };
 
 interface MediaProps {

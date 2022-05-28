@@ -2,14 +2,17 @@ import {
   AtomicBlockUtils,
   ContentBlock,
   convertFromRaw,
+  convertToRaw,
   DraftHandleValue,
   Editor,
   EditorState,
   getDefaultKeyBinding,
+  RawDraftContentState,
   RichUtils,
 } from 'draft-js';
 import * as React from 'react';
 
+import Button from '@/components/buttons/Button';
 // ComponentsPage
 import {
   BlockStyleControls,
@@ -34,6 +37,7 @@ const CustomEditor = () => {
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(contentState)
   );
+  const [data, setData] = React.useState<RawDraftContentState>();
 
   const handleKeyCommand = React.useCallback(
     (command: string, editorState: EditorState) => {
@@ -74,6 +78,7 @@ const CustomEditor = () => {
   const handlePastedFiles = (files: Array<Blob>): DraftHandleValue => {
     const file = files[0];
     const reader = new FileReader();
+
     reader.onload = () => {
       const dataPath = URL.createObjectURL(file);
       const contentState = editorState.getCurrentContent();
@@ -84,6 +89,7 @@ const CustomEditor = () => {
           src: dataPath,
           height: 'auto',
           width: '100%',
+          name: files[0].name,
         }
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -106,31 +112,46 @@ const CustomEditor = () => {
     }
   }
 
-  return (
-    <div className='mx-auto my-4 min-h-fit rounded-xl bg-slate-100 p-4 shadow'>
-      <BlockStyleControls
-        editorState={editorState}
-        onToggle={toggleBlockType}
-      />
-      <InlineStyleControls
-        editorState={editorState}
-        onToggle={toggleInlineStyle}
-      />
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const contentState = editorState.getCurrentContent();
+    const rawContent = convertToRaw(contentState);
+    setData(rawContent);
+  };
 
-      <div className={className}>
-        <Editor
-          blockRendererFn={mediaBlockRenderer}
-          customStyleMap={styleMap}
-          editorKey='editor'
-          editorState={editorState}
-          handleKeyCommand={handleKeyCommand}
-          handlePastedFiles={handlePastedFiles}
-          keyBindingFn={keyBindingEditorCommand}
-          onChange={onChange}
-          placeholder='Paste an image or video URL'
-        />
-      </div>
-    </div>
+  return (
+    <>
+      <form className='' onSubmit={handleSubmit}>
+        <div className='mx-auto my-4 min-h-fit rounded-xl bg-slate-100 p-4 shadow'>
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={toggleBlockType}
+          />
+          <InlineStyleControls
+            editorState={editorState}
+            onToggle={toggleInlineStyle}
+          />
+
+          <div className={className}>
+            <Editor
+              blockRendererFn={mediaBlockRenderer}
+              customStyleMap={styleMap}
+              editorKey='editor'
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              handlePastedFiles={handlePastedFiles}
+              keyBindingFn={keyBindingEditorCommand}
+              onChange={onChange}
+              placeholder='Paste an image or video URL'
+            />
+          </div>
+        </div>
+        <Button variant='primary' className='mt-4' type='submit'>
+          Submit
+        </Button>
+      </form>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </>
   );
 };
 

@@ -12,14 +12,11 @@ import {
 } from 'draft-js';
 import * as React from 'react';
 
+// Components
 import Button from '@/components/buttons/Button';
-// ComponentsPage
-import {
-  BlockStyleControls,
-  InlineStyleControls,
-} from '@/components/editor/StyleControls';
 
 import Media from './Media';
+import { BlockStyleControls, InlineStyleControls } from './StyleControls';
 
 function mediaBlockRenderer(contentBlock: ContentBlock) {
   if (contentBlock.getType() === 'atomic') {
@@ -31,8 +28,8 @@ function mediaBlockRenderer(contentBlock: ContentBlock) {
 
   return null;
 }
-
 type SyntheticKeyboardEvent = React.KeyboardEvent;
+
 const CustomEditor = () => {
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(contentState)
@@ -78,15 +75,15 @@ const CustomEditor = () => {
   const handlePastedFiles = (files: Array<Blob>): DraftHandleValue => {
     const file = files[0];
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const dataPath = URL.createObjectURL(file);
+
+    reader.onload = (event) => {
+      const src = event.target?.result;
       const contentState = editorState.getCurrentContent();
       const contentStateWithEntity = contentState.createEntity(
         'image',
         'IMMUTABLE',
         {
-          src: dataPath,
+          src,
         }
       );
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -97,7 +94,7 @@ const CustomEditor = () => {
       );
       setEditorState(newEditorState);
     };
-    // reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
     return 'handled';
   };
 
